@@ -78,6 +78,65 @@ static void set_parameters
    }
 
    param->dest_socket_name = argv[2];
+
+}
+
+static int set_options
+(
+   struct JH_parameters param [const restrict static 1],
+   int const argc,
+   const char * argv [const static argc]
+)
+{
+   int i;
+
+   for (i = (JH_PARAMETERS_COUNT + 1); i < argc; ++i)
+   {
+
+      if
+      (
+         JH_STRING_EQUALS("-m", argv[i])
+         || JH_STRING_EQUALS("--main-storage", argv[i])
+      )
+      {
+         if (i == (argc - 1))
+         {
+            JH_FATAL(stderr, "Missing value for option \"%s\".", argv[i]);
+
+            return -1;
+         }
+
+         i += 1;
+
+         param->main_storage_filename = argv[i];
+      }
+      else if
+      (
+         JH_STRING_EQUALS("-t", argv[i])
+         || JH_STRING_EQUALS("--temporary-storage-prefix", argv[i])
+      )
+      {
+         if (i == (argc - 1))
+         {
+            JH_FATAL(stderr, "Missing value for option \"%s\".", argv[i]);
+
+            return -1;
+         }
+
+         i += 1;
+
+         param->temp_storage_prefix = argv[i];
+         param->temp_storage_prefix_length = strlen(argv[i]);
+      }
+      else
+      {
+         JH_FATAL(stderr, "Unrecognized option \"%s\".", argv[i]);
+
+         return -1;
+      }
+   }
+
+   return 0;
 }
 
 int JH_parameters_initialize
@@ -90,6 +149,11 @@ int JH_parameters_initialize
    set_default_to_all_fields(param);
 
    set_parameters(param, argc, argv);
+
+   if (set_options(param, argc, argv) < 0)
+   {
+      return -1;
+   }
 
    if (!is_valid(param))
    {

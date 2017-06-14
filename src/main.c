@@ -17,16 +17,19 @@ static void print_help (const char runnable [const restrict static 1])
 {
    printf
    (
-      "JabberHive - Limiter\n"
+      "JabberHive - Storage\n"
       "Software Version %d\n"
       "Protocol Version %d\n"
       "\nUsages:\n"
-      "   JH GATEWAY:\t%s SOCKET_NAME DESTINATION REPLY_RATE\n"
+      "   JH GATEWAY:\t%s SOCKET_NAME DESTINATION\n"
       "   SHOW HELP:\tAnything else.\n"
       "\nParameters:\n"
       "   SOCKET_NAME:\tValid UNIX socket.\n"
       "   DESTINATION:\tValid UNIX socket.\n"
-      "   REPLY_RATE:\tInteger [0,100].\n",
+      "\nOptions:\n"
+      "   -m, --main-storage:\tMain storage file (data is appended).\n"
+      "   -t, --temporary-storage-prefix:\tPrefix for temporary files"
+      " (e.g. \"/tmp/jh_storage_\").\n",
       JH_PROGRAM_VERSION,
       JH_PROTOCOL_VERSION,
       runnable

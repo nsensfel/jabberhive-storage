@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-#define JH_PARAMETERS_COUNT 3
+#define JH_PARAMETERS_COUNT 2
 
 #define JH_PARAMETERS_DEFAULT_MAIN_STORAGE_FILENAME "storage.txt"
 #define JH_PARAMETERS_DEFAULT_TEMP_STORAGE_PREFIX    "/tmp/jabberhive-storage/storage_thread_"
