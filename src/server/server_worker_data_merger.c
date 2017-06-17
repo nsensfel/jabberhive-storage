@@ -143,8 +143,13 @@ static void merge_thread_data
 
 void * JH_server_worker_data_merger_main (void * input)
 {
+   int err;
    JH_index i;
    struct JH_server_worker worker;
+   struct timespec abstime;
+
+   memset((void *) &abstime, 0, sizeof(struct timespec));
+   abstime.tv_sec = 5;
 
    initialize(&worker, input);
 
@@ -152,11 +157,18 @@ void * JH_server_worker_data_merger_main (void * input)
 
    while (JH_server_is_running())
    {
-      pthread_cond_wait
-      (
-         &(worker.params.thread_collection->merger_condition),
-         &(worker.params.thread_collection->merger_mutex)
-      );
+      err =
+         pthread_cond_timedwait
+         (
+            &(worker.params.thread_collection->merger_condition),
+            &(worker.params.thread_collection->merger_mutex),
+            &abstime
+         );
+
+      if (err == ETIMEDOUT)
+      {
+         continue;
+      }
 
       pthread_mutex_lock(&(worker.params.thread_collection->mutex));
 
