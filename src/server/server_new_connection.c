@@ -103,6 +103,8 @@ static int get_new_thread (struct JH_server server [const restrict static 1])
          "Reallocation of the threads' data list failed."
       );
 
+      server->workers.threads_capacity -= 1;
+
       pthread_mutex_unlock(&(server->workers.mutex));
 
       return -1;

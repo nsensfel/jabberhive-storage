@@ -24,6 +24,8 @@
 
 #define JH_SERVER_WORKER_MAX_WAITING_TIME 5
 
+#define JH_SERVER_WORKER_DATA_MERGER_DELAY 5
+
 enum JH_server_thread_state
 {
    JH_SERVER_JOINING_THREAD,

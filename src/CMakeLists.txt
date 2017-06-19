@@ -2,6 +2,7 @@ add_subdirectory(error)
 add_subdirectory(core)
 add_subdirectory(filter)
 add_subdirectory(server)
+add_subdirectory(timespec)
 add_subdirectory(parameters)
 
 set(

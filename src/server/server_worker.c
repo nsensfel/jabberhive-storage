@@ -121,7 +121,16 @@ static int initialize
       return -1;
    }
 
-   return connect_downstream(worker);
+   if (connect_downstream(worker) < 0)
+   {
+      fclose(worker->storage_file);
+
+      worker->storage_file = (FILE *) NULL;
+
+      return -1;
+   }
+
+   return 0;
 }
 
 static void finalize
@@ -221,7 +230,12 @@ void * JH_server_worker_main (void * input)
    struct JH_filter filter;
    struct JH_server_worker worker;
 
-   initialize(&worker, input);
+   if (initialize(&worker, input) < 0)
+   {
+      finalize(&worker);
+
+      return NULL;
+   }
 
    if (JH_filter_initialize(&filter) < 0)
    {

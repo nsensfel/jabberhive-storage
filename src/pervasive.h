@@ -16,6 +16,14 @@
    #define JH_DEBUG_ALL 0
 #endif
 
+#ifndef JH_DEBUG_SERVER_CONNECTIONS
+   #define JH_DEBUG_SERVER_CONNECTIONS (JH_DEBUG_ALL || 0)
+#endif
+
+#ifndef JH_DEBUG_SERVER_TIMEOUTS
+   #define JH_DEBUG_SERVER_TIMEOUTS (JH_DEBUG_ALL || 0)
+#endif
+
 #define JH__TO_STRING(x) #x
 #define JH_TO_STRING(x) JH__TO_STRING(x)
 #define JH_ISOLATE(a) do {a} while (0)

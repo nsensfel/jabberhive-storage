@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "../pervasive.h"
 #include "../parameters/parameters.h"
 
 #include "server.h"
@@ -15,12 +16,6 @@ int JH_server_main
    JH_index retries;
 
    retries = 0;
-   /* TODO
-   if (JH_server_set_signal_handlers < 0)
-   {
-      return -1;
-   }
-   */
 
    if (JH_server_initialize(&server, params) < 0)
    {
@@ -32,7 +27,7 @@ int JH_server_main
       switch (JH_server_wait_for_event(&server))
       {
          case 0: /* Timed out or signal'd. */
-            JH_S_DEBUG(stderr, 1, "Timed out...");
+            JH_S_DEBUG(stderr, JH_DEBUG_SERVER_TIMEOUTS, "Timed out...");
             JH_server_handle_joining_threads(&server);
 
             retries = 0;
@@ -40,7 +35,7 @@ int JH_server_main
             break;
 
          case 1: /* New client attempted connection. */
-            JH_S_DEBUG(stderr, 1, "New connection.");
+            JH_S_DEBUG(stderr, JH_DEBUG_SERVER_CONNECTIONS, "New connection.");
             JH_server_handle_joining_threads(&server);
             (void) JH_server_handle_new_connection(&server);
 
@@ -50,6 +45,15 @@ int JH_server_main
 
          case -1: /* Something bad happened. */
             retries += 1;
+
+            JH_WARNING
+            (
+               stderr,
+               "The server had an issue while waiting for events to occur."
+               " This way try %d, out of %d.",
+               retries,
+               JH_SERVER_MAX_RETRIES
+            );
 
             if (retries == JH_SERVER_MAX_RETRIES)
             {
@@ -71,6 +75,8 @@ int JH_server_main
       }
    }
 
+   retries = 0;
+
    /* Waiting for the threads to join... */
    while (server.workers.currently_running > 0)
    {
@@ -83,6 +89,15 @@ int JH_server_main
 
          case -1: /* Something bad happened. */
             retries += 1;
+
+            JH_WARNING
+            (
+               stderr,
+               "The server had an issue while waiting for threads to join."
+               " This way try %d out of %d.",
+               retries,
+               JH_SERVER_MAX_RETRIES
+            );
 
             if (retries == JH_SERVER_MAX_RETRIES)
             {

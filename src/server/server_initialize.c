@@ -166,7 +166,7 @@ int JH_server_initialize
 
    if (initialize_worker_collection(&(server->workers), params) < 0)
    {
-      return -1;
+      return -2;
    }
 
    if
@@ -178,12 +178,19 @@ int JH_server_initialize
       ) < 0
    )
    {
-      /* TODO: free "server->workers" */
+      JH_server_finalize(server);
 
-      return -2;
+      return -3;
    }
 
    initialize_thread_parameters(server, params);
 
-   return JH_server_worker_data_merger_thread_init(server);
+   if (JH_server_worker_data_merger_thread_init(server) < 0)
+   {
+      JH_server_finalize(server);
+
+      return -4;
+   }
+
+   return 0;
 }

@@ -7,7 +7,10 @@
 #include "../core/index.h"
 
 #include "../parameters/parameters.h"
+
 #include "../error/error.h"
+
+#include "../timespec/timespec.h"
 
 #include "../filter/filter.h"
 
@@ -146,10 +149,11 @@ void * JH_server_worker_data_merger_main (void * input)
    int err;
    JH_index i;
    struct JH_server_worker worker;
-   struct timespec abstime;
+   struct timespec delay, current_time, target_time;
 
-   memset((void *) &abstime, 0, sizeof(struct timespec));
-   abstime.tv_sec = 5;
+   memset((void *) &delay, 0, sizeof(struct timespec));
+
+   delay.tv_sec = JH_SERVER_WORKER_DATA_MERGER_DELAY;
 
    initialize(&worker, input);
 
@@ -157,12 +161,17 @@ void * JH_server_worker_data_merger_main (void * input)
 
    while (JH_server_is_running())
    {
+      /* Get current time */
+      (void) clock_gettime(CLOCK_REALTIME, &current_time);
+
+      JH_timespec_add(&current_time, &delay, &target_time);
+
       err =
          pthread_cond_timedwait
          (
             &(worker.params.thread_collection->merger_condition),
             &(worker.params.thread_collection->merger_mutex),
-            &abstime
+            &target_time
          );
 
       if (err == ETIMEDOUT)
