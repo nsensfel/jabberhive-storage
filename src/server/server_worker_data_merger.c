@@ -117,8 +117,10 @@ static void merge_thread_data
       return;
    }
 
+   pthread_mutex_unlock(&(collection->mutex));
+
    /** Append content of 'in' to 'out' ****************************************/
-   while ((c = (char) fgetc(in)) != EOF)
+   while ((c = fgetc(in)) != EOF)
    {
       if (fputc(c, out) == EOF)
       {
@@ -140,6 +142,8 @@ static void merge_thread_data
    /** Close the files & return ***********************************************/
    fclose(in);
    fclose(out);
+
+   pthread_mutex_lock(&(collection->mutex));
 
    return;
 }
