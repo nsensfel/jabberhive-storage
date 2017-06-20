@@ -90,7 +90,7 @@ static void merge_thread_data
    const struct JH_parameters params [const restrict static 1]
 )
 {
-   char c;
+   int c;
    FILE * in, * out;
 
    /** Open input & output files **********************************************/
