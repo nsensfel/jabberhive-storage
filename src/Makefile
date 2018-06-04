@@ -27,6 +27,6 @@ clean:
 		sed 's,\($*\)\.o[ :]*,\1.o $@ : ,g' < $@.$$$$ > $@; \
 		rm -f $@.$$$$
 
-.JUST_CHECK
+.JUST_CHECK:
 
 include $(DEP_FILES)
